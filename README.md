@@ -11,8 +11,9 @@ This repository documents the projects completed as part of the **CodSoft Artifi
 - **Approach:** Combines computer vision (feature extraction via CNNs or vision transformers) and natural language processing (sequence generation via RNN/LSTM or transformer-based decoders).
 
 ### 2. Task 4: Recommendation System (`Task-4-Recommendation-System/`)
-- **Objective:** Build a personalized recommendation engine tailored to user preferences or item relationships.
-- **Approach:** Implements collaborative filtering, content-based filtering, or hybrid techniques to generate accurate ranking and item suggestions.
+- **Objective:** Build a content-based movie recommendation engine tailored to user preferences and movie metadata.
+- **Approach:** Computes TF-IDF vectors from movie feature soups (genres, keywords, overview) and ranks similarity using cosine similarity. Includes an interactive Streamlit UI.
+- **Dataset & Attribution:** Utilizes [The Movies Dataset](https://www.kaggle.com/datasets/rounakbanik/the-movies-dataset) (MovieLens & TMDB Metadata, 42,227 cleaned films). Optimized with on-the-fly similarity to run effortlessly on 8 GB RAM laptops. Data sourced from TMDB and GroupLens.
 
 ### 3. Task 5: Face Detection and Recognition (`Task-5-Face-Detection/`)
 - **Objective:** Detect and identify human faces in images or video streams.

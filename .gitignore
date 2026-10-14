@@ -32,11 +32,16 @@ ENV/
 env/
 env.bak/
 venv.bak/
+**/.venv/
+**/venv/
+Task-4-Recommendation-System/.venv/
 
 # Environment variables & secrets
 .env
 .env.*
 !.env.example
+kaggle.json
+**/kaggle.json
 
 # IDEs and Editors
 .vscode/
@@ -56,3 +61,15 @@ Thumbs.db
 *.pth
 *.onnx
 *.bin
+
+# Task 4: Movie Recommendation System - Large Source Datasets
+Task-4-Recommendation-System/data/credits.csv
+Task-4-Recommendation-System/data/ratings.csv
+Task-4-Recommendation-System/data/ratings_small.csv
+Task-4-Recommendation-System/data/movies_metadata.csv
+Task-4-Recommendation-System/data/keywords.csv
+Task-4-Recommendation-System/data/links.csv
+Task-4-Recommendation-System/data/links_small.csv
+
+# Ensure the processed application dataset remains trackable
+!Task-4-Recommendation-System/data/movies.csv
