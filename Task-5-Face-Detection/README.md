@@ -1,0 +1,154 @@
+# Task 5: Face Detection & Recognition Web App
+
+An interactive, beginner-friendly face detection application built with **OpenCV**, **YuNet** (deep learning ONNX model), and **Streamlit**. Designed to run smoothly on standard laptops with integrated graphics and 8 GB of RAM.
+
+---
+
+## 1. Project Overview & Objectives
+
+The primary goal of this project is to reliably detect and count human faces in digital images and live webcam streams. 
+
+While classical techniques like Haar Cascades are simple, they often struggle with lighting changes, occlusions, and produce high false-positive rates. This project leverages **YuNet**, a lightweight convolutional neural network (CNN), providing real-time, robust face detection on CPU hardware.
+
+---
+
+## 2. Key Features
+
+- **Dual Input Modes:**
+  - **File Upload:** Supports `.jpg`, `.jpeg`, and `.png` image files.
+  - **Live Webcam:** Capture instant snapshots using Streamlit's native `st.camera_input`.
+- **Deep Learning Face Detection:** Powered by OpenCV's built-in `cv2.FaceDetectorYN` and the pre-trained YuNet ONNX model.
+- **Interactive Threshold Controls:**
+  - **Confidence Threshold (`scoreThreshold`):** Filter out low-confidence background noise (`0.30`–`0.95`, default `0.70`).
+  - **NMS IoU Threshold (`nmsThreshold`):** Suppress duplicate overlapping boxes on the same face (`0.10`–`0.70`, default `0.30`).
+- **Dynamic Scale Normalization:** Automatically rescales high-resolution portraits ($>800\text{ px}$) during inference to maintain high detection confidence, then maps coordinates back to full resolution.
+- **Visual Annotations:** Customizable bounding-box color palettes, stroke thickness, and optional index tags (`Face #1`, `Face #2`).
+- **Real-Time Metrics:** Live metric display showing the total number of faces found and image dimensions.
+- **Side-by-Side Comparison:** Clear visual comparison between the original input and the annotated result.
+- **Direct PNG Download:** Download processed, annotated images directly from the browser with zero temporary files written to disk.
+
+---
+
+## 3. Technologies Used
+
+- **Language:** Python 3.13.1
+- **Computer Vision:** `opencv-python<5` (OpenCV 4.13.0 with `cv2.FaceDetectorYN` and `cv2.dnn`)
+- **Deep Learning Model:** YuNet ONNX (`face_detection_yunet_2023mar.onnx`)
+- **Web Interface:** `streamlit` (v1.55+ / v1.66+)
+- **Numerical Processing:** `numpy`
+- **Image Decoding & Orientation:** `pillow` (handles EXIF orientation tags and RGBA/RGB conversions)
+
+---
+
+## 4. Project Folder Structure
+
+```text
+Task-5-Face-Detection/
+├── .venv/                                # Isolated Python 3.13 virtual environment
+├── models/
+│   └── face_detection_yunet_2023mar.onnx # Official YuNet pre-trained weights (232 KB)
+├── app.py                                # Streamlit dashboard interface
+├── detector.py                           # FaceDetector class wrapping YuNet
+├── requirements.txt                      # Project dependencies
+├── test_detector.py                      # Automated unittest suite (22 tests)
+└── README.md                             # Documentation
+```
+
+---
+
+## 5. Windows Setup & Installation
+
+### Prerequisites
+- Windows 10/11
+- Python 3.13.1 (accessible via `py` launcher)
+
+### Setup Steps
+
+1. **Navigate to the Project Directory:**
+   ```powershell
+   cd D:\CODSOFT_TASKSNO\Task-5-Face-Detection
+   ```
+
+2. **Activate Existing Virtual Environment (or create a new one):**
+   ```powershell
+   # Activate existing environment
+   .\.venv\Scripts\activate
+
+   # If creating from scratch:
+   # py -3.13 -m venv .venv
+   # .\.venv\Scripts\activate
+   ```
+
+3. **Install Required Packages:**
+   ```powershell
+   pip install -r requirements.txt
+   ```
+
+---
+
+## 6. Running the Application
+
+Launch the Streamlit web dashboard:
+
+```powershell
+streamlit run app.py
+```
+*Alternatively, run directly with the virtual environment's executable:*
+```powershell
+.\.venv\Scripts\python.exe -m streamlit run app.py
+```
+
+Once started, Streamlit will provide a local URL (typically `http://localhost:8501`) that you can open in any web browser.
+
+---
+
+## 7. Running the Automated Unit Tests
+
+The project includes a comprehensive test suite covering model loading, input validation, scale normalization, bounding-box coordinate formats, and parameter boundaries.
+
+Run the test suite using Python's built-in `unittest` runner:
+
+```powershell
+.\.venv\Scripts\python.exe -m unittest -v test_detector.py
+```
+
+---
+
+## 8. How the Face Detection Pipeline Works
+
+### What is YuNet?
+YuNet is an ultra-lightweight, high-performance convolutional neural network (CNN) developed by Shiqi Yu and integrated directly into OpenCV's DNN module. It is trained on the WIDER FACE benchmark and performs single-stage face detection and 5-point facial landmark localization in milliseconds on standard CPUs.
+
+### Confidence Threshold (`scoreThreshold`)
+Every candidate face box generated by YuNet is assigned a probability score from $0.0$ to $1.0$.
+- **Higher values (e.g., 0.70–0.85):** Stricter filtering; reduces false alarms on background textures but may miss subtle or distant faces.
+- **Lower values (e.g., 0.40–0.50):** Increases sensitivity to detect faint, partially shadowed, or distant faces at the cost of potential false positives.
+
+### Non-Maximum Suppression (`nmsThreshold`)
+Object detectors often produce multiple overlapping candidate boxes for a single face. Non-Maximum Suppression (NMS) compares overlapping boxes using Intersection-over-Union (IoU) and suppresses redundant boxes, keeping only the candidate with the highest confidence score.
+
+### Image-Scale Normalization
+YuNet's convolutional layers have a maximum receptive field optimized for faces within a specific pixel range. On high-resolution close-up portraits (e.g., $1200 \times 1600$), a face can span over $900\text{ px}$, causing detection confidence to drop. 
+To resolve this:
+1. If the longest dimension of an image exceeds $800\text{ px}$, it is proportionally downscaled for inference.
+2. YuNet detects the face with high confidence within its optimal receptive field.
+3. Detected bounding-box coordinates $(x, y, w, h)$ are automatically inverted and mapped back to the original full-resolution image coordinate space.
+
+---
+
+## 9. Limitations & Edge Cases
+
+While YuNet significantly outperforms classical Haar Cascades, users should be aware of standard computer vision limitations:
+- **Severe Occlusion:** Heavy masks, sunglasses, or hands covering major facial features may prevent detection.
+- **Extreme Poses:** Profiles beyond 90 degrees (looking away from the camera) or extreme tilt angles may be missed.
+- **Low Light / Heavy Motion Blur:** Severe grain, dark shadows, or fast camera movement can degrade feature contrast.
+- **Extremely Tiny Faces:** In dense stadium-sized crowd photographs, faces smaller than $10 \times 10\text{ px}$ may fall below the network's resolution threshold.
+
+---
+
+## 10. Model Attribution & Licensing
+
+- **Model:** YuNet (`face_detection_yunet_2023mar.onnx`)
+- **Original Authors & Repository:** [ShiqiYu/libfacedetection](https://github.com/ShiqiYu/libfacedetection) and the [OpenCV Zoo Project](https://github.com/opencv/opencv_zoo/tree/main/models/face_detection_yunet).
+- **Official Weights Download:** OpenCV Zoo Git LFS distribution.
+- **License:** **Apache License 2.0 / 3-Clause BSD License**. Permissive for educational, personal, and commercial usage.
