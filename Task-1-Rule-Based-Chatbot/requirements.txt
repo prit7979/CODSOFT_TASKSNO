@@ -1,0 +1,11 @@
+# CodSoft Internship Task 1: Rule-Based Chatbot
+# ---------------------------------------------
+# Zero external dependencies required.
+# This project uses Python's standard library modules exclusively:
+# - re (Regular expression pattern matching)
+# - random (Pseudo-randomized conversational response selection)
+# - datetime (System date and time inquiries)
+# - sys (System and Python runtime information)
+# - unittest (Built-in automated test suite)
+#
+# Minimum compatible Python version: 3.8+ (Tested on Python 3.13.1 on Windows).
