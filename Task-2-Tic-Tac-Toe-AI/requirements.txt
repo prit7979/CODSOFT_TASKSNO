@@ -1,0 +1,11 @@
+# CodSoft Internship Task 2: Tic-Tac-Toe AI
+# ----------------------------------------
+# Zero external dependencies required.
+# This project uses Python's standard library modules exclusively:
+# - math (Infinity constants for Minimax and Alpha-Beta bounds)
+# - random (Game simulations and tie-breakers in testing)
+# - sys (Process exit and CLI argument stream handling)
+# - typing (Type hinting for clean, maintainable code)
+# - unittest (Built-in automated test suite)
+#
+# Compatible Python version: Python 3.8+ (Tested on Python 3.13.1 on Windows).
